@@ -7,7 +7,7 @@ setup() {
     # the directory of the script
     DIR="$( cd "$( dirname "$BATS_TEST_FILENAME" )" && pwd )"
 
-    PATH="$DIR../:$PATH"
+    PATH="$DIR/../:$PATH"
 }
 
 @test "Test help" {
