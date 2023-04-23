@@ -36,6 +36,9 @@ setup() {
     echo c > c
     mkdir z
     mvln a b c z
+    grep a a
+    grep b b
+    grep c c
     grep a z/a
     grep b z/b
     grep c z/c
@@ -47,16 +50,33 @@ setup() {
 @test "Test directory to directory" {
     cd $BATS_TEST_TMPDIR
     mkdir a
+    echo b > a/b
     mkdir z
     mvln a z
+    grep b a/b
+    grep b z/a/b
     [[ -L a && -e a ]]
 }
 
-@test "Test directory to directory with trailing slash on source" {
+@test "Test directory to directory, with trailing slashes" {
     cd $BATS_TEST_TMPDIR
     mkdir a
+    echo b > a/b
+    mkdir z
+    mvln a/ z/
+    grep b a/b
+    grep b z/a/b
+    [[ -L a && -e a ]]
+}
+
+@test "Test directory to directory, with trailing slash on source" {
+    cd $BATS_TEST_TMPDIR
+    mkdir a
+    echo b > a/b
     mkdir z
     mvln a/ z
+    grep b a/b
+    grep b z/a/b
     [[ -L a && -e a ]]
 }
 
