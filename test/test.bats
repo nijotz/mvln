@@ -59,3 +59,14 @@ setup() {
     mvln a/ z
     [[ -L a && -e a ]]
 }
+
+@test "Test more than two arguments, all of them files" {
+    cd $BATS_TEST_TMPDIR
+    echo a > a
+    echo b > b
+    echo c > c
+    echo d > d
+    run mvln a b c d
+    [ "$status" -ne 0 ]
+    [ "$output" = "target 'd' is not a directory" ]
+}

@@ -1,7 +1,7 @@
 #!/bin/sh
 # mvln
 
-VERSION='1.0.1'
+VERSION='1.0.2'
 
 mvln_main() {
 	e_args=16
@@ -50,11 +50,19 @@ USAGE
 mvln_process() {
 	_require realpath
 
+	if [ $# -gt 2 ]; then
+		for last_arg; do true; done
+
+		if [ ! -d "$last_arg" ]; then
+			_error "target '${last_arg}' is not a directory"
+			exit 1
+		fi
+	fi
+
 	while [ $# -gt 1 ]
 	do
 		# get the last argument for the destination
-		dest=
-		for i; do dest="$i"; done
+		for dest; do true; done
 
 		src="$1"
 		shift
