@@ -93,11 +93,6 @@ _exit() {
 	exit $exit_code
 }
 
-_exit() {
-	exit_code=$?
-	exit $exit_code
-}
-
 _invalid_cmd() {
 	_error "Invalid command: $cmd"
 	_echo
