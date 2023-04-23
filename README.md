@@ -15,3 +15,8 @@ OPTIONS:
 
 ```
 
+# Testing
+```
+git submodule update --init
+./test/bats/bin/bats test/test.bats
+```
