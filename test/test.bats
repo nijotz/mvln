@@ -58,6 +58,17 @@ setup() {
     [[ -L a && -e a ]]
 }
 
+@test "Test directory to directory, with renaming" {
+    cd $BATS_TEST_TMPDIR
+    mkdir a
+    echo b > a/b
+    mkdir z
+    mvln a z/y
+    grep b a/b
+    grep b z/y/b
+    [[ -L a && -e a ]]
+}
+
 @test "Test directory to directory, with trailing slashes" {
     cd $BATS_TEST_TMPDIR
     mkdir a
