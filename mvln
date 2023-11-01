@@ -73,7 +73,7 @@ mvln_process() {
 
 		target="$( realpath "$dest" --relative-to="$( dirname "$src" )" )"
 
-		ln -s "$target" "$(realpath -s $src)"
+		ln -s "$target" "$(realpath -s "$src")"
 	done
 }
 

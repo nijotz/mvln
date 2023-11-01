@@ -101,3 +101,22 @@ setup() {
     [ "$status" -ne 0 ]
     [ "$output" = "target 'd' is not a directory" ]
 }
+
+@test "Test spaces in source" {
+    cd $BATS_TEST_TMPDIR
+    mkdir 'a b'
+    echo 'a' > a\ b/a
+    mkdir z
+    mvln a\ b/ z/
+    grep a z/a\ b/a
+    [[ -L 'a b' ]]
+}
+
+@test "Test spaces in destination" {
+    cd $BATS_TEST_TMPDIR
+    echo 'z' > z
+    mkdir a\ b/
+    mvln z a\ b/
+    grep z a\ b/z
+    [[ -L z ]]
+}
