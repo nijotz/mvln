@@ -2,7 +2,7 @@ mvln
 ====
 
 ```
-mvln 1.0.3
+mvln 1.0.4
 
 USAGE: mvln [<options>] <src1> [<src2>...] <dest>
 
