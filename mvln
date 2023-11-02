@@ -1,6 +1,8 @@
 #!/bin/sh
 # mvln
 
+set -e
+
 VERSION='1.0.4'
 
 mvln_main() {

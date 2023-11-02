@@ -120,3 +120,12 @@ setup() {
     grep z a\ b/z
     [[ -L z ]]
 }
+
+@test "Test moving twice" {
+    cd $BATS_TEST_TMPDIR
+    echo 'a' > a
+    mvln a b
+    run mvln a b
+    [ "$status" -ne 0 ]
+    [ "$output" = "mv: 'a' and 'b' are the same file" ]
+}
