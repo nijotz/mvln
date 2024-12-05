@@ -36,7 +36,7 @@ $SCRIPTNAME $VERSION
 
 USAGE: $scriptinv [<options>] <src1> [<src2>...] <dest>
 
-Move source files and directories to target and leave symlinks their place.
+Move source files and directories to destination and leave symlinks in their place.
 
 OPTIONS:
 

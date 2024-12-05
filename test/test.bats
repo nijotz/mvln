@@ -4,9 +4,10 @@ setup() {
     load 'test_helper/bats-support/load'
     load 'test_helper/bats-assert/load'
 
-    # the directory of the script
+    # the directory of this test script
     DIR="$( cd "$( dirname "$BATS_TEST_FILENAME" )" && pwd )"
 
+    # Add the root path of this repo to the PATH for mvln to work below
     PATH="$DIR/../:$PATH"
 }
 
