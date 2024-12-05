@@ -46,9 +46,8 @@ setup() {
     touch a
     run mvln a b
     [ "$status" -ne 0 ]
-    { read output1; read output2; } <<< $output
-    [ "$output1" = "ERROR: Required: realpath" ]
-    [ "$output2" = "ERROR: One or more executables or apps are missing." ]
+    [ "${lines[0]}" = "ERROR: Required: realpath" ]
+    [ "${lines[1]}" = "ERROR: One or more executables or apps are missing." ]
     ## Verify nothing changed
     [[ -f a && ! -e b ]]
 
@@ -57,6 +56,24 @@ setup() {
     run mvln a b
     [ "$status" = 0 ]
     [[ -L a && -e a ]]
+}
+
+@test "Test realpath requirement has wrong version" {
+    # Fake a bad realpath
+    cd $BATS_TEST_TMPDIR
+    mkdir bin
+    touch bin/realpath
+    chmod +x bin/realpath
+
+    # Test bad requirement
+    PATH="./bin:$PATH"
+    touch a
+    run mvln a b
+    [ "$status" -ne 0 ]
+    [ "$output" = "ERROR: GNU version of realpath required" ]
+
+    # Verify nothing changed
+    [[ -f a && ! -e b ]]
 }
 
 @test "Test file to file" {

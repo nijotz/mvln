@@ -48,6 +48,11 @@ USAGE
 
 mvln_process() {
 	_require mv ln dirname realpath
+	version=$(realpath --version)
+	if [[ $version != *GNU* ]]; then
+		_error "GNU version of realpath required"
+		exit 1
+	fi
 
 	if [ $# -gt 2 ]; then
 		for last_arg; do true; done
