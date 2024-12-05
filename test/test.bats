@@ -15,6 +15,12 @@ setup() {
     mvln -h | grep "Move source files and directories"
 }
 
+@test "Test invalid option" {
+    run mvln -6
+    [ "$status" = 16 ]
+    [[ "$output" =~ "illegal option -- 6" ]]
+}
+
 @test "Test file to file" {
     cd $BATS_TEST_TMPDIR
     touch a
@@ -100,7 +106,7 @@ setup() {
     echo d > d
     run mvln a b c d
     [ "$status" -ne 0 ]
-    [ "$output" = "target 'd' is not a directory" ]
+    [ "$output" = "ERROR: target 'd' is not a directory" ]
 }
 
 @test "Test spaces in source" {

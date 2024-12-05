@@ -81,20 +81,17 @@ mvln_version() {
 }
 
 _error() {
-	echo "$@" >&2
+	echo "ERROR: $@" >&2
 }
 
 _invalid_cmd() {
-	_error "Invalid command: $cmd"
+	_error "Invalid command: $0"
 	echo
 	mvln_help
 	exit $e_args
 }
 
 _invalid_opt() {
-	_error "Invalid option: $opt"
-	echo
-	mvln_help
 	exit $e_args
 }
 
@@ -112,7 +109,8 @@ _require() {
 
 	if [ $missing_bin -ne 0 ]
 	then
-		_fatal "$e_missing_app" "One or more executables or apps are missing."
+		_error "One or more executables or apps are missing."
+		exit "$e_missing_app"
 	fi
 }
 
