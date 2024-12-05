@@ -21,6 +21,44 @@ setup() {
     [[ "$output" =~ "illegal option -- 6" ]]
 }
 
+@test "Test requirements missing" {
+    # Keep track of the srcdir to add it to the path
+    srcdir=$(pwd)
+    cd $BATS_TEST_TMPDIR
+
+    # Remove access to all binaries
+    mkdir bin
+    ## Needed by bats
+    ln -s $(which rm) bin/rm
+    ## Needed by this test
+    ln -s $(which touch) bin/touch
+    ln -s $(which which) bin/which
+    ln -s $(which chmod) bin/chmod
+    ## Needed by mvln
+    ln -s $(which dirname) bin/dirname
+    ln -s $(which ln) bin/ln
+    ln -s $(which mv) bin/mv
+    ### Break a requirement
+    ln -s $(which realpath) bin/not-realpath
+
+    # Test requirement missing
+    PATH="$srcdir:./bin"
+    touch a
+    run mvln a b
+    [ "$status" -ne 0 ]
+    { read output1; read output2; } <<< $output
+    [ "$output1" = "ERROR: Required: realpath" ]
+    [ "$output2" = "ERROR: One or more executables or apps are missing." ]
+    ## Verify nothing changed
+    [[ -f a && ! -e b ]]
+
+    # Test requirement existing works
+    mv bin/not-realpath bin/realpath
+    run mvln a b
+    [ "$status" = 0 ]
+    [[ -L a && -e a ]]
+}
+
 @test "Test file to file" {
     cd $BATS_TEST_TMPDIR
     touch a

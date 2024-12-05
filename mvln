@@ -47,7 +47,7 @@ USAGE
 }
 
 mvln_process() {
-	_require realpath
+	_require mv ln dirname realpath
 
 	if [ $# -gt 2 ]; then
 		for last_arg; do true; done
