@@ -48,36 +48,49 @@ USAGE
 
 mvln_process() {
 	_require mv ln dirname realpath
+
+	# Only the GNU version has the "--relative-to" option
 	version=$(realpath --version)
 	if [[ $version != *GNU* ]]; then
 		_error "GNU version of realpath required"
 		exit 1
 	fi
 
-	if [ $# -gt 2 ]; then
-		for last_arg; do true; done
+	# get the last argument for the destination
+	for dest; do true; done
 
-		if [ ! -d "$last_arg" ]; then
-			_error "target '${last_arg}' is not a directory"
+	# dest is checked for a directory multiple times, just do it once here
+	if [ -d "$dest" ]; then
+		dest_is_dir=true
+	else
+		dest_is_dir=false
+	fi
+
+	# If more than two arguments are given, the last one must be a directory
+	if [ $# -gt 2 ]; then
+		if [ "$dest_is_dir" = false ]; then
+			_error "target '${dest}' is not a directory"
 			exit 1
 		fi
 	fi
 
 	while [ $# -gt 1 ]
 	do
-		# get the last argument for the destination
-		for dest; do true; done
-
 		src="$1"
-		shift
 
-		[ -d "$dest" ] && dest="$dest/$( basename "$src" )"
+		# If the destination is a directory, we need to link to where the file will end up
+		if [ "$dest_is_dir" = true ]; then
+			src_dest="$dest/$( basename "$src" )"
+		else
+			src_dest="$dest"
+		fi
 
-		mv -v "$src" "$dest"
-
-		target="$( realpath "$dest" --relative-to="$( dirname "$src" )" )"
+		# use realpath to get a relative path to the destination
+		target="$( realpath -s "$src_dest" --relative-to="$( dirname "$src" )" )"
 
 		ln -s "$target" "$(realpath -s "$src")"
+
+		shift
 	done
 }
 
