@@ -18,7 +18,7 @@ setup() {
 @test "Test invalid option" {
     run mvln -6
     [ "$status" = 16 ]
-    [[ "$output" =~ "illegal option -- 6" ]]
+    [[ "$output" =~ illegal\ option\ --\ 6 ]] || false
 }
 
 @test "Test requirements missing" {
@@ -45,17 +45,17 @@ setup() {
     PATH="$srcdir:./bin"
     touch a
     run mvln a b
-    [ "$status" -ne 0 ]
+    [ "$status" != 0 ]
     [ "${lines[0]}" = "ERROR: Required: realpath" ]
     [ "${lines[1]}" = "ERROR: One or more executables or apps are missing." ]
     ## Verify nothing changed
-    [[ -f a && ! -e b ]]
+    [ -f a ] && [ ! -e b ]
 
     # Test requirement existing works
     mv bin/not-realpath bin/realpath
     run mvln a b
     [ "$status" = 0 ]
-    [[ -L a && -e a ]]
+    [ -L a ] && [ -e a ]
 }
 
 @test "Test realpath requirement has wrong version" {
@@ -69,26 +69,28 @@ setup() {
     PATH="./bin:$PATH"
     touch a
     run mvln a b
-    [ "$status" -ne 0 ]
+    [ "$status" != 0 ]
     [ "$output" = "ERROR: GNU version of realpath required" ]
 
     # Verify nothing changed
-    [[ -f a && ! -e b ]]
+    [ -f a ] && [ ! -e b ]
 }
 
 @test "Test file to file" {
     cd $BATS_TEST_TMPDIR
-    touch a
+    echo a > a
     mvln a b
-    [[ -L a && -e a ]]
+    grep a b
+    [ -L a ] && [ -e a ]
 }
 
 @test "Test file to directory" {
     cd $BATS_TEST_TMPDIR
-    touch a
+    echo a > a
     mkdir z
     mvln a z
-    [[ -L a && -e a ]]
+    grep a z/a
+    [ -L a ] && [ -e a ]
 }
 
 @test "Test multiple files to a directory" {
@@ -104,9 +106,9 @@ setup() {
     grep a z/a
     grep b z/b
     grep c z/c
-    [[ -L a && -e a ]]
-    [[ -L b && -e b ]]
-    [[ -L c && -e c ]]
+    [ -L a ] && [ -e a ]
+    [ -L b ] && [ -e b ]
+    [ -L c ] && [ -e c ]
 }
 
 @test "Test directory to directory" {
@@ -117,7 +119,7 @@ setup() {
     mvln a z
     grep b a/b
     grep b z/a/b
-    [[ -L a && -e a ]]
+    [ -L a ] && [ -e a ]
 }
 
 @test "Test directory to directory, with renaming" {
@@ -128,7 +130,7 @@ setup() {
     mvln a z/y
     grep b a/b
     grep b z/y/b
-    [[ -L a && -e a ]]
+    [ -L a ] && [ -e a ]
 }
 
 @test "Test directory to directory, with trailing slashes" {
@@ -139,7 +141,7 @@ setup() {
     mvln a/ z/
     grep b a/b
     grep b z/a/b
-    [[ -L a && -e a ]]
+    [ -L a ] && [ -e a ]
 }
 
 @test "Test directory to directory, with trailing slash on source" {
@@ -150,7 +152,7 @@ setup() {
     mvln a/ z
     grep b a/b
     grep b z/a/b
-    [[ -L a && -e a ]]
+    [ -L a ] && [ -e a ]
 }
 
 @test "Test more than two arguments, all of them files" {
@@ -160,27 +162,27 @@ setup() {
     echo c > c
     echo d > d
     run mvln a b c d
-    [ "$status" -ne 0 ]
+    [ "$status" != 0 ]
     [ "$output" = "ERROR: target 'd' is not a directory" ]
 }
 
 @test "Test spaces in source" {
     cd $BATS_TEST_TMPDIR
     mkdir 'a b'
-    echo 'a' > a\ b/a
+    echo a > a\ b/a
     mkdir z
     mvln a\ b/ z/
     grep a z/a\ b/a
-    [[ -L 'a b' ]]
+    [ -L 'a b' ]
 }
 
 @test "Test spaces in destination" {
     cd $BATS_TEST_TMPDIR
-    echo 'z' > z
+    echo z > z
     mkdir a\ b/
     mvln z a\ b/
     grep z a\ b/z
-    [[ -L z ]]
+    [ -L z ]
 }
 
 @test "Test moving twice" {
