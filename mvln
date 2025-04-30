@@ -85,9 +85,15 @@ mvln_process() {
 			src_dest="$dest"
 		fi
 
+		if [ -e "$src_dest" ]; then
+			_error "target '${src_dest}' already exists"
+			exit 1
+		fi
+
 		# use realpath to get a relative path to the destination
 		target="$( realpath -s "$src_dest" --relative-to="$( dirname "$src" )" )"
 
+		mv -n -v "$src" "$src_dest"
 		ln -s "$target" "$(realpath -s "$src")"
 
 		shift

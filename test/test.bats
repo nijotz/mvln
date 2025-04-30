@@ -217,3 +217,14 @@ setup() {
     [ -L a ] && [ -e a ]
     [ -L b ] && [ -e b ]
 }
+
+@test "Test there is already a file at the destination" {
+    cd $BATS_TEST_TMPDIR
+    echo a > a
+    echo b > b
+    run mvln a b
+    [ "$status" = 1 ]
+    [ "$output" = "ERROR: target 'b' already exists" ]
+    grep a a
+    grep b b
+}
