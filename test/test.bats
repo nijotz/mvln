@@ -185,11 +185,35 @@ setup() {
     [ -L z ]
 }
 
-@test "Test moving twice" {
+@test "Test running from another directory" {
     cd $BATS_TEST_TMPDIR
-    echo 'a' > a
-    mvln a b
-    run mvln a b
-    [ "$status" -ne 0 ]
-    [ "$output" = "mv: 'a' and 'b' are the same file" ]
+    echo a > a
+    echo b > b
+    mkdir z
+    mkdir other
+    cd other
+    mvln ../a ../b ../z
+    cd ..
+    grep a a
+    grep a z/a
+    grep b b
+    grep b z/b
+    [ -L a ] && [ -e a ]
+    [ -L b ] && [ -e b ]
+}
+
+@test "Test running from destination directory" {
+    cd $BATS_TEST_TMPDIR
+    echo a > a
+    echo b > b
+    mkdir z
+    cd z
+    mvln ../a ../b .
+    cd ..
+    grep a a
+    grep a z/a
+    grep b b
+    grep b z/b
+    [ -L a ] && [ -e a ]
+    [ -L b ] && [ -e b ]
 }
